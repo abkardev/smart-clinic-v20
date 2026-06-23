@@ -63,6 +63,7 @@ enum WhatsAppStep {
   select_date
   select_time
   ask_name
+  ask_whatsapp
   ask_call_time
   offers
   done
