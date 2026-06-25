@@ -232,72 +232,83 @@ export async function GET(req: NextRequest) {
 }
 
 // ─── POST — incoming message ──────────────────────────────────────────────────
-export async function POST(req: NextRequest) {
-  const body = await req.json().catch(err => {
-    console.error('❌ JSON parse error:', err);
-    return null;
-  });
+// export async function POST(req: NextRequest) {
+//   const body = await req.json().catch(err => {
+//     console.error('❌ JSON parse error:', err);
+//     return null;
+//   });
 
-  console.log(
-    '📥 WEBHOOK BODY:',
+//   console.log(
+//     '📥 WEBHOOK BODY:',
+//     JSON.stringify(body, null, 2)
+//   );
+
+//   // Fire and forget
+//   (async () => {
+//     try {
+//       const message =
+//         body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
+
+//       console.log('📥 MESSAGE OBJECT:', message);
+
+//       if (!message) {
+//         console.log(
+//           '⚠️ No message found in payload (likely status update)'
+//         );
+//         return;
+//       }
+
+//       const phone = message.from as string;
+
+//       const userInput =
+//         message.type === 'text'
+//           ? message.text?.body?.trim()
+//           : message.type === 'interactive'
+//           ? (
+//               message.interactive?.list_reply?.id ??
+//               message.interactive?.button_reply?.id ??
+//               ''
+//             )
+//           : '';
+
+//       console.log('📥 PROCESSING MESSAGE:', {
+//         phone,
+//         type: message.type,
+//         userInput,
+//       });
+
+//       const adapter = makeWhatsAppAdapter();
+
+//       console.log('🚀 Calling processMessage');
+
+//       await processMessage(
+//         phone,
+//         userInput,
+//         adapter,
+//         BookingSource.whatsapp
+//       );
+
+//       console.log('✅ processMessage completed');
+//     } catch (err) {
+//       console.error(
+//         '❌ WhatsApp webhook error:',
+//         err
+//       );
+//     }
+//   })();
+
+//   return new Response('OK', {
+//     status: 200,
+//   });
+// }
+
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => null);
+
+  console.error(
+    'FULL WHATSAPP PAYLOAD:',
     JSON.stringify(body, null, 2)
   );
 
-  // Fire and forget
-  (async () => {
-    try {
-      const message =
-        body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0];
-
-      console.log('📥 MESSAGE OBJECT:', message);
-
-      if (!message) {
-        console.log(
-          '⚠️ No message found in payload (likely status update)'
-        );
-        return;
-      }
-
-      const phone = message.from as string;
-
-      const userInput =
-        message.type === 'text'
-          ? message.text?.body?.trim()
-          : message.type === 'interactive'
-          ? (
-              message.interactive?.list_reply?.id ??
-              message.interactive?.button_reply?.id ??
-              ''
-            )
-          : '';
-
-      console.log('📥 PROCESSING MESSAGE:', {
-        phone,
-        type: message.type,
-        userInput,
-      });
-
-      const adapter = makeWhatsAppAdapter();
-
-      console.log('🚀 Calling processMessage');
-
-      await processMessage(
-        phone,
-        userInput,
-        adapter,
-        BookingSource.whatsapp
-      );
-
-      console.log('✅ processMessage completed');
-    } catch (err) {
-      console.error(
-        '❌ WhatsApp webhook error:',
-        err
-      );
-    }
-  })();
-
-  return new Response('OK', {
-    status: 200,
-  });
+  return new Response('OK', { status: 200 });
 }
